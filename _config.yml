@@ -1,0 +1,26 @@
+title: Merchen Family Recipes
+description: Recipes from our family's kitchens.
+url: "https://merchens.github.io"
+baseurl: "/Merchen_Recipes"
+
+# Paste the link to your Google Form here (the "Send" > link URL).
+# The "Add a recipe" button on the site points to it.
+google_form_url: ""
+
+collections:
+  recipes:
+    output: true
+    permalink: /recipes/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: recipes
+    values:
+      layout: recipe
+
+markdown: kramdown
+exclude:
+  - README.md
+  - scripts/
+  - .github/

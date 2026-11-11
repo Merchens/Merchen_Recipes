@@ -1,0 +1,25 @@
+---
+layout: default
+---
+<article class="recipe">
+  <a class="back" href="{{ '/' | relative_url }}">← All recipes</a>
+  <h1>{{ page.title }}</h1>
+  <p class="meta">
+    {% if page.category %}<span class="tag">{{ page.category }}</span>{% endif %}
+    {% if page.author %}<span>From {{ page.author }}</span>{% endif %}
+  </p>
+  {% if page.servings or page.prep_time or page.cook_time %}
+  <dl class="facts">
+    {% if page.servings %}<div><dt>Serves</dt><dd>{{ page.servings }}</dd></div>{% endif %}
+    {% if page.prep_time %}<div><dt>Prep</dt><dd>{{ page.prep_time }}</dd></div>{% endif %}
+    {% if page.cook_time %}<div><dt>Cook</dt><dd>{{ page.cook_time }}</dd></div>{% endif %}
+  </dl>
+  {% endif %}
+  {% if page.photo %}
+    <img class="hero" src="{{ page.photo }}" alt="{{ page.title }}" loading="lazy">
+  {% endif %}
+  <div class="recipe-body">
+    {{ content }}
+  </div>
+  <button class="btn btn-quiet print" onclick="window.print()">Print recipe</button>
+</article>

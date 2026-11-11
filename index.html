@@ -1,0 +1,64 @@
+---
+layout: default
+---
+<section class="intro">
+  <h1>{{ site.title }}</h1>
+  <p>{{ site.description }}
+    {% if site.google_form_url != "" %}Have one to share? <a href="{{ site.google_form_url }}" target="_blank" rel="noopener">Add a recipe</a> — it shows up here within a few hours.{% endif %}
+  </p>
+</section>
+
+{% assign recipes = site.recipes | sort_natural: "title" %}
+{% assign categories = site.recipes | map: "category" | compact | uniq | sort_natural %}
+
+<div class="controls">
+  <input id="search" type="search" placeholder="Search recipes, ingredients, or who made it…" aria-label="Search recipes">
+  <div class="chips" role="group" aria-label="Filter by category">
+    <button class="chip active" data-cat="">All</button>
+    {% for c in categories %}<button class="chip" data-cat="{{ c | escape }}">{{ c }}</button>{% endfor %}
+  </div>
+</div>
+
+<ul class="cards" id="cards">
+  {% for r in recipes %}
+  <li class="card" data-cat="{{ r.category | escape }}" data-search="{{ r.title | append: ' ' | append: r.author | append: ' ' | append: r.category | append: ' ' | append: r.content | strip_html | downcase | escape }}">
+    <a href="{{ r.url | relative_url }}">
+      {% if r.photo %}<img src="{{ r.photo }}" alt="" loading="lazy">{% else %}<div class="ph" aria-hidden="true">🍽️</div>{% endif %}
+      <div class="card-text">
+        <h2>{{ r.title }}</h2>
+        <p>{% if r.category %}{{ r.category }}{% endif %}{% if r.category and r.author %} · {% endif %}{% if r.author %}{{ r.author }}{% endif %}</p>
+      </div>
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+<p id="empty" class="empty" hidden>No recipes match that search.</p>
+
+<script>
+(function () {
+  var search = document.getElementById('search');
+  var chips = document.querySelectorAll('.chip');
+  var cards = document.querySelectorAll('.card');
+  var empty = document.getElementById('empty');
+  var cat = '';
+  function apply() {
+    var q = search.value.trim().toLowerCase();
+    var shown = 0;
+    cards.forEach(function (c) {
+      var ok = (!cat || c.dataset.cat === cat) && (!q || c.dataset.search.indexOf(q) !== -1);
+      c.hidden = !ok;
+      if (ok) shown++;
+    });
+    empty.hidden = shown !== 0;
+  }
+  search.addEventListener('input', apply);
+  chips.forEach(function (b) {
+    b.addEventListener('click', function () {
+      chips.forEach(function (x) { x.classList.remove('active'); });
+      b.classList.add('active');
+      cat = b.dataset.cat;
+      apply();
+    });
+  });
+})();
+</script>
